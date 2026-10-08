@@ -1,55 +1,870 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .box {
-            height: 200px;
-            width: 130px;
-            background-color: #f1e6e6;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MediBook — Doctor Appointment Platform</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--p:#0e7490;--p2:#06b6d4;--bg:#f1f5f9;--card:#fff;--tx:#0f172a;--mut:#64748b;
+      --bd:#e2e8f0;--ok:#16a34a;--warn:#d97706;--err:#dc2626;--r:12px}
+body{font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+     background:var(--bg);color:var(--tx);line-height:1.5}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font:inherit;width:100%;padding:10px 12px;border:1px solid var(--bd);
+     border-radius:10px;background:#fff;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--p2);box-shadow:0 0 0 3px rgba(6,182,212,.15)}
+input:disabled{background:#f8fafc;color:var(--mut)}
+h2{font-size:1.3rem;margin-bottom:14px}
+h3{font-size:1rem}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:16px}
+.mut{color:var(--mut);font-size:.9rem}
+.btn{padding:10px 16px;border-radius:10px;font-weight:600;transition:.15s;display:inline-block}
+.btn.primary{background:var(--p);color:#fff}
+.btn.primary:hover{background:#155e75}
+.btn.ghost{border:1px solid var(--bd);background:#fff}
+.btn.ghost:hover{background:#f8fafc}
+.btn.sm{padding:7px 12px;font-size:.85rem}
+.btn.block{width:100%;margin-top:8px}
 
-            border-top-style: solid;
-            border-top-color: red;
-            border-top-width: 4px;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            border-radius: 20px;
-            box-shadow: blue;
+/* ---------- Top bar ---------- */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;
+        background:#fff;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
+.brand{font-weight:800;font-size:1.15rem;display:flex;align-items:center;gap:9px;color:var(--p)}
+.logo{background:var(--p);color:#fff;width:28px;height:28px;border-radius:8px;
+      display:grid;place-items:center;font-size:16px}
+.user{display:flex;align-items:center;gap:12px;font-size:.9rem}
+.who em{font-style:normal;font-size:.72rem;background:#e0f2fe;color:#0369a1;
+        padding:2px 8px;border-radius:99px;text-transform:capitalize;margin-left:4px}
 
+/* ---------- Layout ---------- */
+.layout{display:grid;grid-template-columns:230px 1fr;gap:22px;padding:22px;
+        max-width:1150px;margin:0 auto;align-items:start}
+.side{display:flex;flex-direction:column;gap:6px;position:sticky;top:82px}
+.nav{text-align:left;padding:11px 14px;border-radius:10px;color:var(--mut);font-weight:600}
+.nav:hover{background:#e2e8f0}
+.nav.active{background:var(--p);color:#fff}
 
-        }
+/* ---------- Auth ---------- */
+.auth-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+           justify-content:center;gap:16px;padding:24px;
+           background:linear-gradient(160deg,#ecfeff,#f1f5f9)}
+.auth-card{width:100%;max-width:430px}
+.tabs{display:flex;gap:6px;background:#f1f5f9;padding:5px;border-radius:10px;margin-bottom:16px}
+.tab{flex:1;padding:9px;border-radius:8px;font-weight:600;color:var(--mut)}
+.tab.active{background:#fff;color:var(--p);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.seg{display:flex;gap:6px;background:#f1f5f9;padding:5px;border-radius:10px;margin-bottom:16px}
+.seg-btn{flex:1;padding:9px;border-radius:8px;font-weight:600;color:var(--mut)}
+.seg-btn.active{background:var(--p);color:#fff}
+.demo{font-size:.8rem;color:var(--mut);text-align:center;max-width:430px}
 
-        .container {
-            display: flex;
-            justify-content: space-evenly;
-        }
-    </style>
+/* ---------- Forms ---------- */
+.fld{display:block;margin-bottom:13px}
+.fld>span{display:block;font-size:.82rem;font-weight:600;color:#475569;margin-bottom:5px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ---------- Doctor cards ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.doc-card{display:flex;flex-direction:column;gap:6px}
+.avatar{width:46px;height:46px;border-radius:50%;background:#cffafe;color:#0e7490;
+        display:grid;place-items:center;font-weight:800;font-size:1rem}
+.spec{color:var(--p);font-weight:600;font-size:.88rem}
+.doc-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;
+          padding-top:10px;border-top:1px dashed var(--bd)}
+.fee{font-weight:800;color:var(--p)}
+.filters{display:grid;grid-template-columns:1fr 220px;gap:12px;margin-bottom:16px}
+
+/* ---------- Slots ---------- */
+.slots{display:flex;flex-wrap:wrap;gap:8px}
+.slot{padding:7px 13px;border:1px solid var(--bd);border-radius:99px;
+      font-size:.85rem;background:#fff}
+.slot.active{background:var(--p);color:#fff;border-color:var(--p)}
+.slot.busy{opacity:.35;text-decoration:line-through;cursor:not-allowed}
+.avail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:16px}
+.avail-day h4{margin-bottom:10px;color:var(--p)}
+
+/* ---------- Appointments ---------- */
+.list{display:flex;flex-direction:column;gap:12px}
+.appt{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.appt-main{display:flex;flex-direction:column;gap:4px;min-width:220px}
+.appt-side{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.row-btns{display:flex;gap:8px}
+.note{font-size:.85rem;background:#ecfeff;border-left:3px solid var(--p2);
+      padding:6px 10px;border-radius:6px}
+.badge{padding:4px 11px;border-radius:99px;font-size:.75rem;font-weight:700;text-transform:capitalize}
+.b-pending{background:#fef3c7;color:#92400e}
+.b-confirmed{background:#dbeafe;color:#1e40af}
+.b-completed{background:#dcfce7;color:#166534}
+.b-cancelled{background:#fee2e2;color:#991b1b}
+.b-rejected{background:#f1f5f9;color:#475569}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip-btn{padding:7px 14px;border-radius:99px;border:1px solid var(--bd);
+          background:#fff;font-size:.85rem;font-weight:600;color:var(--mut)}
+.chip-btn.active{background:var(--p);color:#fff;border-color:var(--p)}
+.empty{padding:34px;text-align:center;color:var(--mut);background:#fff;
+       border:1px dashed var(--bd);border-radius:var(--r)}
+
+/* ---------- Modal ---------- */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:grid;
+         place-items:center;padding:20px;z-index:40}
+.modal{width:100%;max-width:470px;max-height:90vh;overflow:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.x{font-size:1.1rem;color:var(--mut);padding:4px 8px;border-radius:8px}
+.x:hover{background:#f1f5f9}
+
+/* ---------- Toast ---------- */
+#toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);
+       display:flex;flex-direction:column;gap:8px;z-index:60;align-items:center}
+.toast{background:#0f172a;color:#fff;padding:11px 20px;border-radius:10px;
+       font-size:.9rem;animation:pop .25s ease;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.toast.err{background:var(--err)}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ---------- Responsive ---------- */
+@media(max-width:800px){
+  .layout{grid-template-columns:1fr;padding:14px;gap:14px}
+  .side{position:static;flex-direction:row;overflow-x:auto;padding-bottom:4px}
+  .nav{white-space:nowrap}
+  .filters{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
+  .topbar{padding:12px 16px}
+  .who{display:none}
+}
+</style>
 </head>
-
 <body>
 
+<div id="app"></div>
+<div id="modalRoot"></div>
+<div id="toast"></div>
 
-    <div class="container">
+<script>
+/* =====================================================================
+   1. CONSTANTS & STORAGE HELPERS
+   ===================================================================== */
+const USERS = 'da_users', APPTS = 'da_appts', SESSION = 'da_session';
 
-        <div class="box">
-            <img src="./assets/moon.png" style="height: 30px; width: 30px;" alt="">
-        </div>
+const DB = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+};
 
+const uid      = p => p + '_' + Math.random().toString(36).slice(2, 9);
+const esc      = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const val      = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+const cap      = s => s.charAt(0).toUpperCase() + s.slice(1);
+const initials = n => n.replace(/^Dr\.?\s*/i, '').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
 
-        <div class="box">
+const todayStr = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10); };
+const dow      = ds => ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(ds + 'T00:00:00').getDay()];
+const fmtDate  = ds => new Date(ds + 'T00:00:00').toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+const fmtTime  = t => { const [h, m] = t.split(':').map(Number); return `${(h % 12) || 12}:${String(m).padStart(2,'0')} ${h < 12 ? 'AM' : 'PM'}`; };
 
-        </div>
-        <div class="box">
+const SPECIALTIES = ['General Physician','Cardiologist','Dermatologist','Pediatrician',
+                     'Orthopedic','Gynecologist','ENT Specialist','Neurologist','Psychiatrist','Dentist'];
+const WEEKDAYS    = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const BASE_TIMES  = ['09:00','09:30','10:00','10:30','11:00','11:30','12:00',
+                     '14:00','14:30','15:00','15:30','16:00','16:30','17:00'];
 
-        </div>
-        <div class="box">
+/* =====================================================================
+   2. APP STATE
+   ===================================================================== */
+let sessionId = DB.get(SESSION, null);
+let ui = {
+  authTab: 'login',
+  regRole: 'patient',
+  pTab: 'find',          // patient tabs: find | appts | profile
+  dTab: 'appts',         // doctor tabs:  appts | avail | profile
+  search: '',
+  spec: 'all',
+  apptFilter: 'all',
+  booking: null
+};
 
-        </div>
+function currentUser() {
+  if (!sessionId) return null;
+  return DB.get(USERS, []).find(u => u.id === sessionId) || null;
+}
+function saveUsers(list) { DB.set(USERS, list); }
+function updateUser(id, patch) {
+  const users = DB.get(USERS, []);
+  const i = users.findIndex(u => u.id === id);
+  if (i > -1) { users[i] = Object.assign({}, users[i], patch); saveUsers(users); }
+}
+function bookedTimes(doctorId, date) {
+  return DB.get(APPTS, [])
+    .filter(a => a.doctorId === doctorId && a.date === date &&
+                 !['cancelled','rejected'].includes(a.status))
+    .map(a => a.time);
+}
+
+/* =====================================================================
+   3. SEED DEMO DATA (runs once)
+   ===================================================================== */
+function seed() {
+  if (DB.get(USERS, null)) return;
+
+  saveUsers([
+    {
+      id:'doc1', role:'doctor', name:'Dr. Ananya Sharma', email:'ananya@medicare.com',
+      password:'123456', specialty:'Cardiologist', qualification:'MBBS, MD (Cardiology)',
+      experience:12, fee:800, phone:'9800000001', clinic:'City Heart Clinic, Pune',
+      bio:'Interventional cardiologist with 12 years of experience in heart failure and preventive cardiology.',
+      availability:{ Mon:['09:00','09:30','10:00','10:30'], Wed:['09:00','09:30','11:00'],
+                     Fri:['14:00','14:30','15:00','15:30'] }
+    },
+    {
+      id:'doc2', role:'doctor', name:'Dr. Rakesh Verma', email:'rakesh@medicare.com',
+      password:'123456', specialty:'Dermatologist', qualification:'MBBS, DDVL',
+      experience:8, fee:600, phone:'9800000002', clinic:'SkinCare Clinic, Mumbai',
+      bio:'Specialist in acne, pigmentation and hair disorders.',
+      availability:{ Tue:['10:00','10:30','11:00'], Thu:['16:00','16:30','17:00'],
+                     Sat:['09:00','09:30'] }
+    },
+    {
+      id:'doc3', role:'doctor', name:'Dr. Meera Iyer', email:'meera@medicare.com',
+      password:'123456', specialty:'Pediatrician', qualification:'MBBS, DCH',
+      experience:15, fee:500, phone:'9800000003', clinic:'Little Steps Child Care, Bengaluru',
+      bio:'Child specialist focused on newborn care, vaccination and growth monitoring.',
+      availability:{ Mon:['14:00','14:30','15:00'], Wed:['14:00','14:30'],
+                     Sat:['10:00','10:30','11:00'] }
+    },
+    {
+      id:'pat1', role:'patient', name:'Rahul Nair', email:'rahul@mail.com',
+      password:'123456', phone:'9900000001', age:29, gender:'Male'
+    }
+  ]);
+
+  DB.set(APPTS, [
+    { id: uid('apt'), patientId:'pat1', doctorId:'doc1', date: todayStr(), time:'09:00',
+      reason:'Chest discomfort while walking', status:'confirmed', createdAt: Date.now(), note:'' }
+  ]);
+}
+
+/* =====================================================================
+   4. TOAST
+   ===================================================================== */
+function toast(msg, type) {
+  const box = document.getElementById('toast');
+  const el = document.createElement('div');
+  el.className = 'toast' + (type === 'err' ? ' err' : '');
+  el.textContent = msg;
+  box.appendChild(el);
+  setTimeout(() => el.remove(), 2600);
+}
+
+/* =====================================================================
+   5. ROUTER / ROOT RENDER
+   ===================================================================== */
+function renderApp() {
+  const root = document.getElementById('app');
+  const me = currentUser();
+  if (!me) { root.innerHTML = authView(); return; }
+  root.innerHTML = me.role === 'patient' ? patientView() : doctorView();
+  window.scrollTo({ top: 0 });
+}
+
+/* =====================================================================
+   6. AUTH VIEWS
+   ===================================================================== */
+function authView() {
+  const isLogin = ui.authTab === 'login';
+  return `
+  <div class="auth-wrap">
+    <div class="brand" style="font-size:1.5rem"><span class="logo">✚</span> MediBook</div>
+    <div class="card auth-card">
+      <div class="tabs">
+        <button class="tab ${isLogin ? 'active' : ''}" onclick="setAuthTab('login')">Login</button>
+        <button class="tab ${!isLogin ? 'active' : ''}" onclick="setAuthTab('register')">Register</button>
+      </div>
+      ${isLogin ? loginForm() : registerForm()}
+    </div>
+    <p class="demo">Demo logins — Doctor: <b>ananya@medicare.com / 123456</b><br>
+       Patient: <b>rahul@mail.com / 123456</b></p>
+  </div>`;
+}
+
+function loginForm() {
+  return `
+  <form onsubmit="return doLogin(event)">
+    <label class="fld"><span>Email</span>
+      <input type="email" id="liEmail" required placeholder="you@example.com"></label>
+    <label class="fld"><span>Password</span>
+      <input type="password" id="liPass" required minlength="6" placeholder="••••••"></label>
+    <label class="fld"><span>Login as</span>
+      <select id="liRole">
+        <option value="patient">Patient</option>
+        <option value="doctor">Doctor</option>
+      </select></label>
+    <button class="btn primary block" type="submit">Login</button>
+  </form>`;
+}
+
+function registerForm() {
+  const r = ui.regRole;
+  return `
+  <form onsubmit="return doRegister(event)">
+    <div class="seg">
+      <button type="button" class="seg-btn ${r === 'patient' ? 'active' : ''}"
+        onclick="setRegRole('patient')">Patient</button>
+      <button type="button" class="seg-btn ${r === 'doctor' ? 'active' : ''}"
+        onclick="setRegRole('doctor')">Doctor</button>
     </div>
 
-</body>
+    <label class="fld"><span>Full name</span><input id="rgName" required></label>
+    <label class="fld"><span>Email</span><input type="email" id="rgEmail" required></label>
 
+    <div class="row2">
+      <label class="fld"><span>Password</span>
+        <input type="password" id="rgPass" required minlength="6"></label>
+      <label class="fld"><span>Phone</span>
+        <input id="rgPhone" required pattern="[0-9+\\- ]{7,15}"></label>
+    </div>
+
+    ${r === 'patient' ? `
+      <div class="row2">
+        <label class="fld"><span>Age</span>
+          <input type="number" id="rgAge" min="0" max="120" required></label>
+        <label class="fld"><span>Gender</span>
+          <select id="rgGender"><option>Male</option><option>Female</option><option>Other</option></select></label>
+      </div>` : `
+      <div class="row2">
+        <label class="fld"><span>Specialty</span>
+          <select id="rgSpec">${SPECIALTIES.map(s => `<option>${s}</option>`).join('')}</select></label>
+        <label class="fld"><span>Consultation fee (₹)</span>
+          <input type="number" id="rgFee" min="0" required></label>
+      </div>
+      <div class="row2">
+        <label class="fld"><span>Qualification</span>
+          <input id="rgQual" placeholder="MBBS, MD" required></label>
+        <label class="fld"><span>Experience (years)</span>
+          <input type="number" id="rgExp" min="0" required></label>
+      </div>
+      <label class="fld"><span>Clinic / Hospital</span><input id="rgClinic" required></label>`}
+
+    <button class="btn primary block" type="submit">Create account</button>
+  </form>`;
+}
+
+function setAuthTab(t) { ui.authTab = t; renderApp(); }
+function setRegRole(r) { ui.regRole = r; renderApp(); }
+
+function doLogin(e) {
+  e.preventDefault();
+  const email = val('liEmail').toLowerCase();
+  const pass  = val('liPass');
+  const role  = val('liRole');
+  const u = DB.get(USERS, []).find(x =>
+    x.email.toLowerCase() === email && x.password === pass && x.role === role);
+
+  if (!u) { toast('Invalid credentials for the selected role', 'err'); return false; }
+
+  sessionId = u.id;
+  DB.set(SESSION, sessionId);
+  ui.pTab = 'find'; ui.dTab = 'appts';
+  toast('Welcome back, ' + u.name);
+  renderApp();
+  return false;
+}
+
+function doRegister(e) {
+  e.preventDefault();
+  const role  = ui.regRole;
+  const email = val('rgEmail').toLowerCase();
+  const users = DB.get(USERS, []);
+
+  if (users.some(u => u.email.toLowerCase() === email)) {
+    toast('An account with this email already exists', 'err');
+    return false;
+  }
+
+  const base = {
+    id: uid(role),
+    role,
+    name: val('rgName'),
+    email,
+    password: val('rgPass'),
+    phone: val('rgPhone')
+  };
+
+  let extra = {};
+  if (role === 'patient') {
+    extra = { age: Number(val('rgAge')), gender: val('rgGender') };
+  } else {
+    extra = {
+      specialty: val('rgSpec'),
+      qualification: val('rgQual'),
+      experience: Number(val('rgExp')),
+      fee: Number(val('rgFee')),
+      clinic: val('rgClinic'),
+      bio: '',
+      availability: {}
+    };
+  }
+
+  const user = Object.assign(base, extra);
+  users.push(user);
+  saveUsers(users);
+
+  sessionId = user.id;
+  DB.set(SESSION, sessionId);
+  toast('Account created — welcome!');
+  renderApp();
+  return false;
+}
+
+function logout() {
+  sessionId = null;
+  DB.set(SESSION, null);
+  ui.authTab = 'login';
+  renderApp();
+  toast('Logged out');
+}
+
+/* =====================================================================
+   7. SHARED UI PARTS
+   ===================================================================== */
+function topbar(u) {
+  return `
+  <header class="topbar">
+    <div class="brand"><span class="logo">✚</span> MediBook</div>
+    <div class="user">
+      <span class="who">${esc(u.name)}<em>${u.role}</em></span>
+      <button class="btn ghost sm" onclick="logout()">Logout</button>
+    </div>
+  </header>`;
+}
+
+function navBar(items, current, setter) {
+  return `<aside class="side">${items.map(([k, label]) =>
+    `<button class="nav ${current === k ? 'active' : ''}"
+       onclick="${setter}='${k}';renderApp()">${label}</button>`).join('')}</aside>`;
+}
+
+function badge(status) {
+  return `<span class="badge b-${status}">${status}</span>`;
+}
+
+/* =====================================================================
+   8. PATIENT VIEWS
+   ===================================================================== */
+function patientView() {
+  const u = currentUser();
+  const body =
+    ui.pTab === 'find'    ? findDoctorsView() :
+    ui.pTab === 'appts'   ? patientApptsView() :
+                            patientProfileView();
+
+  return topbar(u) + `
+  <div class="layout">
+    ${navBar([['find','Find doctors'],['appts','My appointments'],['profile','Profile']],
+             ui.pTab, 'ui.pTab')}
+    <main class="main">${body}</main>
+  </div>`;
+}
+
+/* ---------- Find doctors ---------- */
+function findDoctorsView() {
+  return `
+  <h2>Find a doctor</h2>
+  <div class="filters">
+    <input id="searchBox" placeholder="Search by doctor name or specialty…"
+           value="${esc(ui.search)}" oninput="ui.search=this.value;renderDoctorList()">
+    <select onchange="ui.spec=this.value;renderDoctorList()">
+      <option value="all">All specialties</option>
+      ${SPECIALTIES.map(s => `<option ${ui.spec === s ? 'selected' : ''}>${s}</option>`).join('')}
+    </select>
+  </div>
+  <div id="doctorList" class="grid">
+    ${doctorCards(DB.get(USERS, []).filter(u => u.role === 'doctor'))}
+  </div>`;
+}
+
+function doctorCards(docs) {
+  const q = ui.search.toLowerCase();
+  const list = docs.filter(d =>
+    (ui.spec === 'all' || d.specialty === ui.spec) &&
+    (d.name.toLowerCase().includes(q) || (d.specialty || '').toLowerCase().includes(q)));
+
+  if (!list.length) return `<div class="empty">No doctors match your search.</div>`;
+
+  return list.map(d => `
+    <div class="card doc-card">
+      <div class="avatar">${esc(initials(d.name))}</div>
+      <h3>${esc(d.name)}</h3>
+      <p class="spec">${esc(d.specialty)}</p>
+      <p class="mut">${esc(d.qualification)} · ${d.experience} yrs exp</p>
+      <p class="mut">${esc(d.clinic || '')}</p>
+      <div class="doc-foot">
+        <span class="fee">₹${d.fee}</span>
+        <button class="btn primary sm" onclick="openBooking('${d.id}')">Book</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderDoctorList() {
+  document.getElementById('doctorList').innerHTML =
+    doctorCards(DB.get(USERS, []).filter(u => u.role === 'doctor'));
+}
+
+/* ---------- Booking modal ---------- */
+function openBooking(doctorId) {
+  ui.booking = { doctorId, date: todayStr(), time: '', reason: '' };
+  renderModal();
+}
+
+function pickSlot(t) {
+  const r = document.getElementById('bkReason');
+  if (r) ui.booking.reason = r.value;
+  ui.booking.time = t;
+  renderModal();
+}
+
+function renderModal() {
+  const b = ui.booking;
+  if (!b) return;
+
+  const d = DB.get(USERS, []).find(u => u.id === b.doctorId);
+  const day = dow(b.date);
+  const available = (d.availability && d.availability[day]) || [];
+  const taken = bookedTimes(d.id, b.date);
+
+  const slotsHTML = available.length
+    ? available.map(t => {
+        const busy = taken.includes(t);
+        return `<button class="slot ${busy ? 'busy' : ''} ${b.time === t ? 'active' : ''}"
+                 ${busy ? 'disabled' : ''} onclick="pickSlot('${t}')">${fmtTime(t)}</button>`;
+      }).join('')
+    : `<p class="mut">Doctor is not available on ${day}. Please choose another date.</p>`;
+
+  document.getElementById('modalRoot').innerHTML = `
+  <div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal card">
+      <div class="modal-head">
+        <h3>Book appointment</h3>
+        <button class="x" onclick="closeModal()">✕</button>
+      </div>
+      <p class="mut" style="margin-bottom:14px">
+        ${esc(d.name)} · ${esc(d.specialty)} · ₹${d.fee}
+      </p>
+
+      <label class="fld"><span>Date</span>
+        <input type="date" min="${todayStr()}" value="${b.date}"
+          onchange="ui.booking.date=this.value;ui.booking.time='';renderModal()"></label>
+
+      <div class="fld"><span>Available slots (${day})</span>
+        <div class="slots">${slotsHTML}</div></div>
+
+      <label class="fld"><span>Reason / symptoms</span>
+        <textarea id="bkReason" rows="2"
+          placeholder="e.g. Fever since 2 days">${esc(b.reason)}</textarea></label>
+
+      <button class="btn primary block" onclick="confirmBooking()">Confirm appointment</button>
+    </div>
+  </div>`;
+}
+
+function closeModal() {
+  ui.booking = null;
+  document.getElementById('modalRoot').innerHTML = '';
+}
+
+function confirmBooking() {
+  const b = ui.booking;
+  if (!b || !b.time) { toast('Please select a time slot', 'err'); return; }
+
+  if (bookedTimes(b.doctorId, b.date).includes(b.time)) {
+    toast('Sorry, that slot was just taken', 'err');
+    renderModal();
+    return;
+  }
+
+  const reason = (document.getElementById('bkReason') || {}).value || '';
+  const appts = DB.get(APPTS, []);
+  appts.push({
+    id: uid('apt'),
+    patientId: currentUser().id,
+    doctorId: b.doctorId,
+    date: b.date,
+    time: b.time,
+    reason: reason.trim(),
+    status: 'pending',
+    createdAt: Date.now(),
+    note: ''
+  });
+  DB.set(APPTS, appts);
+
+  closeModal();
+  toast('Appointment requested — waiting for doctor confirmation');
+  ui.pTab = 'appts';
+  renderApp();
+}
+
+/* ---------- My appointments ---------- */
+function patientApptsView() {
+  const me = currentUser();
+  const users = DB.get(USERS, []);
+  const appts = DB.get(APPTS, [])
+    .filter(a => a.patientId === me.id)
+    .sort((x, y) => (y.date + y.time).localeCompare(x.date + x.time));
+
+  if (!appts.length) {
+    return `<h2>My appointments</h2>
+      <div class="empty">No appointments yet. Go to <b>Find doctors</b> to book one.</div>`;
+  }
+
+  return `<h2>My appointments</h2>
+  <div class="list">${appts.map(a => {
+    const d = users.find(u => u.id === a.doctorId) || { name: 'Unknown doctor' };
+    const canCancel = ['pending','confirmed'].includes(a.status) && a.date >= todayStr();
+
+    return `<div class="card appt">
+      <div class="appt-main">
+        <h3>${esc(d.name)} <span class="spec">${esc(d.specialty || '')}</span></h3>
+        <p class="mut">${fmtDate(a.date)} · ${fmtTime(a.time)} · ₹${d.fee ?? '-'}</p>
+        <p class="mut">Reason: ${esc(a.reason) || '—'}</p>
+        ${a.note ? `<p class="note">Doctor's note: ${esc(a.note)}</p>` : ''}
+      </div>
+      <div class="appt-side">
+        ${badge(a.status)}
+        ${canCancel ? `<button class="btn ghost sm"
+            onclick="cancelAppt('${a.id}')">Cancel</button>` : ''}
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function cancelAppt(id) {
+  if (!confirm('Cancel this appointment?')) return;
+  const appts = DB.get(APPTS, []);
+  const a = appts.find(x => x.id === id);
+  if (!a) return;
+  a.status = 'cancelled';
+  DB.set(APPTS, appts);
+  toast('Appointment cancelled');
+  renderApp();
+}
+
+/* ---------- Patient profile ---------- */
+function patientProfileView() {
+  const me = currentUser();
+  return `
+  <h2>My profile</h2>
+  <div class="card" style="max-width:560px">
+    <label class="fld"><span>Full name</span>
+      <input id="pfName" value="${esc(me.name)}"></label>
+    <div class="row2">
+      <label class="fld"><span>Phone</span>
+        <input id="pfPhone" value="${esc(me.phone || '')}"></label>
+      <label class="fld"><span>Age</span>
+        <input type="number" id="pfAge" min="0" max="120" value="${me.age || ''}"></label>
+    </div>
+    <label class="fld"><span>Gender</span>
+      <select id="pfGender">
+        ${['Male','Female','Other'].map(g =>
+          `<option ${me.gender === g ? 'selected' : ''}>${g}</option>`).join('')}
+      </select></label>
+    <label class="fld"><span>Email (read only)</span>
+      <input value="${esc(me.email)}" disabled></label>
+    <button class="btn primary" onclick="savePatientProfile()">Save changes</button>
+  </div>`;
+}
+
+function savePatientProfile() {
+  const name = val('pfName');
+  if (!name) { toast('Name cannot be empty', 'err'); return; }
+  updateUser(currentUser().id, {
+    name,
+    phone: val('pfPhone'),
+    age: Number(val('pfAge')) || '',
+    gender: val('pfGender')
+  });
+  toast('Profile updated');
+  renderApp();
+}
+
+/* =====================================================================
+   9. DOCTOR VIEWS
+   ===================================================================== */
+function doctorView() {
+  const u = currentUser();
+  const body =
+    ui.dTab === 'appts'   ? doctorApptsView() :
+    ui.dTab === 'avail'   ? doctorAvailView() :
+                            doctorProfileView();
+
+  return topbar(u) + `
+  <div class="layout">
+    ${navBar([['appts','Appointments'],['avail','Availability'],['profile','Profile']],
+             ui.dTab, 'ui.dTab')}
+    <main class="main">${body}</main>
+  </div>`;
+}
+
+/* ---------- Doctor appointments ---------- */
+function doctorApptsView() {
+  const me = currentUser();
+  const users = DB.get(USERS, []);
+  const filters = ['all','pending','confirmed','completed','cancelled','rejected'];
+
+  let appts = DB.get(APPTS, []).filter(a => a.doctorId === me.id);
+  if (ui.apptFilter !== 'all') appts = appts.filter(a => a.status === ui.apptFilter);
+  appts.sort((x, y) => (x.date + x.time).localeCompare(y.date + y.time));
+
+  const actionMap = {
+    pending:   [['confirmed','Confirm'], ['rejected','Reject']],
+    confirmed: [['completed','Complete'], ['cancelled','Cancel']]
+  };
+
+  return `
+  <h2>Appointments</h2>
+  <div class="chips">
+    ${filters.map(f => `<button class="chip-btn ${ui.apptFilter === f ? 'active' : ''}"
+       onclick="ui.apptFilter='${f}';renderApp()">${cap(f)}</button>`).join('')}
+  </div>
+
+  ${appts.length ? `<div class="list">${appts.map(a => {
+    const p = users.find(u => u.id === a.patientId) || { name: 'Unknown patient' };
+    const actions = (actionMap[a.status] || []).map(([s, label]) =>
+      `<button class="btn ${['rejected','cancelled'].includes(s) ? 'ghost' : 'primary'} sm"
+        onclick="setStatus('${a.id}','${s}')">${label}</button>`).join('');
+
+    return `<div class="card appt">
+      <div class="appt-main">
+        <h3>${esc(p.name)} <span class="mut">${p.age ? '· ' + p.age + 'y' : ''} ${esc(p.gender || '')}</span></h3>
+        <p class="mut">${fmtDate(a.date)} · ${fmtTime(a.time)}</p>
+        <p class="mut">Reason: ${esc(a.reason) || '—'}</p>
+        <p class="mut">Phone: ${esc(p.phone || '-')}</p>
+      </div>
+      <div class="appt-side">
+        ${badge(a.status)}
+        <div class="row-btns">${actions}</div>
+      </div>
+    </div>`;
+  }).join('')}</div>` : `<div class="empty">No appointments in this view.</div>`}`;
+}
+
+function setStatus(id, status) {
+  const appts = DB.get(APPTS, []);
+  const a = appts.find(x => x.id === id);
+  if (!a) return;
+
+  if (status === 'completed') {
+    const note = prompt('Add a consultation note / prescription (optional):', a.note || '');
+    if (note !== null) a.note = note.trim();
+  }
+  a.status = status;
+  DB.set(APPTS, appts);
+  toast('Appointment marked as ' + status);
+  renderApp();
+}
+
+/* ---------- Doctor availability ---------- */
+function doctorAvailView() {
+  const me = currentUser();
+  const av = me.availability || {};
+
+  return `
+  <h2>My availability</h2>
+  <p class="mut" style="margin-bottom:16px">
+    Toggle the slots you are available for each day. Patients can only book these slots.
+  </p>
+
+  <div class="avail-grid">
+    ${WEEKDAYS.map(day => `
+      <div class="card avail-day">
+        <h4>${day}</h4>
+        <div class="slots">
+          ${BASE_TIMES.map(t => `
+            <button class="slot ${(av[day] || []).includes(t) ? 'active' : ''}"
+              data-day="${day}" data-time="${t}"
+              onclick="this.classList.toggle('active')">${fmtTime(t)}</button>`).join('')}
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <button class="btn primary" onclick="saveAvailability()">Save availability</button>`;
+}
+
+function saveAvailability() {
+  const av = {};
+  document.querySelectorAll('.avail-day').forEach(box => {
+    const day = box.querySelector('h4').textContent;
+    const times = [...box.querySelectorAll('.slot.active')].map(s => s.dataset.time);
+    if (times.length) av[day] = times.sort();
+  });
+
+  updateUser(currentUser().id, { availability: av });
+  toast('Availability saved');
+  renderApp();
+}
+
+/* ---------- Doctor profile ---------- */
+function doctorProfileView() {
+  const me = currentUser();
+  return `
+  <h2>My profile</h2>
+  <div class="card" style="max-width:620px">
+    <label class="fld"><span>Full name</span>
+      <input id="dpName" value="${esc(me.name)}"></label>
+
+    <div class="row2">
+      <label class="fld"><span>Specialty</span>
+        <select id="dpSpec">
+          ${SPECIALTIES.map(s =>
+            `<option ${me.specialty === s ? 'selected' : ''}>${s}</option>`).join('')}
+        </select></label>
+      <label class="fld"><span>Consultation fee (₹)</span>
+        <input type="number" id="dpFee" min="0" value="${me.fee || 0}"></label>
+    </div>
+
+    <div class="row2">
+      <label class="fld"><span>Qualification</span>
+        <input id="dpQual" value="${esc(me.qualification || '')}"></label>
+      <label class="fld"><span>Experience (years)</span>
+        <input type="number" id="dpExp" min="0" value="${me.experience || 0}"></label>
+    </div>
+
+    <div class="row2">
+      <label class="fld"><span>Phone</span>
+        <input id="dpPhone" value="${esc(me.phone || '')}"></label>
+      <label class="fld"><span>Clinic / Hospital</span>
+        <input id="dpClinic" value="${esc(me.clinic || '')}"></label>
+    </div>
+
+    <label class="fld"><span>About / Bio</span>
+      <textarea id="dpBio" rows="3">${esc(me.bio || '')}</textarea></label>
+
+    <label class="fld"><span>Email (read only)</span>
+      <input value="${esc(me.email)}" disabled></label>
+
+    <button class="btn primary" onclick="saveDoctorProfile()">Save changes</button>
+  </div>`;
+}
+
+function saveDoctorProfile() {
+  const name = val('dpName');
+  if (!name) { toast('Name cannot be empty', 'err'); return; }
+
+  updateUser(currentUser().id, {
+    name,
+    specialty: val('dpSpec'),
+    fee: Number(val('dpFee')) || 0,
+    qualification: val('dpQual'),
+    experience: Number(val('dpExp')) || 0,
+    phone: val('dpPhone'),
+    clinic: val('dpClinic'),
+    bio: val('dpBio')
+  });
+  toast('Profile updated');
+  renderApp();
+}
+
+/* =====================================================================
+   10. BOOT
+   ===================================================================== */
+seed();
+renderApp();
+</script>
+</body>
 </html>
