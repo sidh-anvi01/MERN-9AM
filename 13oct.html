@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .card {
+            height: 300px;
+            width: 200px;
+            background-color: blue;
+        }
+
+        .image {
+            height: 400px;
+            width: 99%;
+        }
+
+        @media(max-width:768px) {
+            .card {
+                background-color: rgb(237, 209, 209);
+                /* width: auto; */
+                width: 200px;
+                border-radius: 20px;
+
+
+            }
+
+            .card:hover {
+                background-color: green;
+            }
+
+            .nav {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .image {
+                height: 200px;
+                width: 99%;
+            }
+
+        }
+
+
+        @media(min-width:768px) and (max-width:1023px) {
+            .card {
+                background-color: orangered;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+
+    </div>
+
+
+
+    <nav class="nav">
+        <a href="">helo</a><a href="">helo</a><a href="">helo</a><a href="">helo</a><a href="">helo</a>
+    </nav>
+
+
+    <img src="./assets/car.jpg" class="image" alt="">
+
+</body>
+
+</html>
