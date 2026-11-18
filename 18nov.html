@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+    <h1>this is classname class </h1>
+
+
+
+
+
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+
+
+<h3 class="head">hello</h3>
+<h3 class="head">hello</h3>
+<h3 class="head">world</h3>
+<h3 class="head">hello</h3>
+<h3>hello</h3>
+<h3>hello</h3>
+<h3>hello</h3>
+
+
+<button onclick="change()">clike</button>
+
+    <script>
+
+        // docuemnt.getElementByClassNAme()
+
+
+
+//         document.getElementsByClassName("box")
+
+
+//  head=  document.getElementsByClassName("head")
+
+// console.log(head)
+
+// console.log(head[2].innerHTML)
+
+
+
+
+function change(){
+
+        head=document.getElementsByClassName("head") 
+
+        //  head[2].style.color="red"
+        //  head[3].style.color="blue"
+        //  head[3].style.backgroundColor="yellow"
+
+
+for(i=0;i<=head.length;i++){
+ head[i].style.color="green"
+ head[i].style.backgroundColor="red"
+
+}
+
+
+}
+
+
+
+
+box=document.getElementsByClassName("box")
+
+// box[2].style.height="90px"
+// box[2].style.width="90px"
+// box[2].style.backgroundColor="red"
+
+
+
+for(i=0;i<=box.length;i++){
+    box[i].style.height="90px"
+box[i].style.width="90px"
+box[i].style.backgroundColor="red"
+box[i].style.margin="10px"
+
+}
+
+    </script>
+</body>
+
+</html>
