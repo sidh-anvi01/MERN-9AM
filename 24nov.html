@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>hello dom class </h1>
+
+
+    <!-- <input type="text" name="" id="name">
+    <p id="para"></p>
+    <input type="text" name="" id="phone">
+    <p id="para2"></p>
+
+    <button onclick="check()">check</button> -->
+
+
+
+    <!-- <input type="text" name="" id="num"> -->
+    <input type="text" name="" id="password">
+    <input type="text" name="" id="confirmPassword">
+
+<button onclick="check()">check</button>
+
+    <script>
+
+
+
+//         function check() {
+
+//             name = document.getElementById("name").value
+// phone=document.getElementById("phone").value
+//             if (!name) {
+//                 // alert("please enter the name ")
+//                 document.getElementById("para").innerHTML = "please enter the name"
+//                  return false
+//             }
+
+//             if(!phone){
+//                 document.getElementById("para2").innerHTML="please enter the phone"
+//             }
+
+//             return true
+//             // console.log(name) 
+//         }
+
+
+
+
+
+// function check(){
+
+//         num=document.getElementById("num").value 
+    
+//         if(!num){
+//             alert("please anter the num")
+//         }
+//         if(num!=100){
+//             alert("not eqaul to 100")
+//         }
+
+//         document.getElementById("num").value=""
+
+// } 
+
+
+
+
+function check(){
+password=document.getElementById("password").value 
+cPass=document.getElementById("confirmPassword").value 
+
+
+ if(!password || !cPass){
+    alert("please enter the passwords ")
+ }
+        
+ if(password!=cPass){
+alert("passord not matched ")
+ }
+
+}
+
+
+
+    </script>
+</body>
+
+</html>
