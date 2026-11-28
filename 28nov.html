@@ -14,8 +14,8 @@
         <input type="button" name="" value="AC"  onclick="display.value=' '">
         <input type="button" name="" value="1"  onclick="display.value+='1'">
         <input type="button" name="" value="2"  onclick="display.value+='2'">
-        <input type="button" name="" value="3"  onclick="display.value+=3">
-        <input type="button" name="" value="*"  onclick="display.value+='*'">
+        <input type="button" name="" value="2"  onclick="display.value+='3'">
+        <input type="button" name="" value="*"  onclick="display.value+='+'">
         <input type="button" name="" value="="  onclick="display.value=eval(display.value)">
         <input type="button" name="" value="DEL"  onclick="display.value=display.value.slice(0,-1)">
 
@@ -23,6 +23,42 @@
     </form>
 
 
+
+    <img src="https://images.unsplash.com/photo-1789758490331-965e803efe37?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDE%3D" alt="" id="image">
+
+<button onclick="change()">click</button>
+
+
+
+<input type="tel"  id="num1">
+<input type="tel"  id="num2">
+<button onclick="add()">+</button>
+
+    <script>
+
+function change(){
+
+    
+    document.getElementById("image").src="https://images.unsplash.com/photo-1786891099665-a93cb4683517?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
+}
+
+
+
+function add(){
+
+        num1=parseInt(document.getElementById("num1").value)
+        num2=parseInt(document.getElementById("num2").value)
+
+
+        console.log(num1+num2)
+
+} 
+
+
+
+
+
+    </script>
 
     
 
